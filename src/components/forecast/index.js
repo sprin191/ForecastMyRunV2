@@ -12,7 +12,8 @@ class Forecast extends Component {
         super(props);
         this.state = {
             forecastData: [],
-            currentDate: moment().format("dddd, MMMM Do YYYY")
+            currentDate: moment().format("dddd, MMMM Do YYYY"),
+            location: null
         };
 
         this.getClimaCellInfo = this.getClimaCellInfo.bind(this);
@@ -23,7 +24,9 @@ class Forecast extends Component {
     }
 
     getForecast() {
-        if (navigator.geolocation) {
+        if (this.state.location && this.state.forecastData) {
+            return;
+        } else if (navigator.geolocation && !this.state.location) {
             navigator.geolocation.getCurrentPosition(this.getClimaCellInfo, this.handleGeoLocationError);
         } else { 
             alert("Geolocation is not supported by this browser.");
@@ -95,7 +98,11 @@ class Forecast extends Component {
                 formattedResult[i].observation_date = moment(formattedResult[i].startTime).format("dddd, MMMM Do YYYY");
                 formattedResult[i].observation_time = moment(formattedResult[i].startTime).format("hA");
                 formattedResult[i].startTime = new Date(formattedResult[i].startTime).toISOString();
-                formattedResult[i].hasSunSet = !(formattedResult[i].startTime >= formattedResult[i].values.sunriseTime && formattedResult[i].startTime < formattedResult[i].sunsetTime);
+                formattedResult[i].hasSunSet = !(formattedResult[i].startTime >= formattedResult[i].values.sunriseTime && formattedResult[i].startTime < formattedResult[i].values.sunsetTime);
+                
+                if (formattedResult[i].hasSunSet && (formattedResult[i].values.weatherCode === 1000 || formattedResult[i].values.weatherCode === 1100 || formattedResult[i].values.weatherCode === 1101 || formattedResult[i].values.weatherCode === 1102)) {
+                    formattedResult[i].values.weatherCode += '1';
+                }
             }
 
             formattedResult = formattedResult.filter(x => x.observation_date === this.state.currentDate);
@@ -103,7 +110,8 @@ class Forecast extends Component {
             console.log(formattedResult);
 
             this.setState({
-                forecastData: formattedResult
+                forecastData: formattedResult,
+                location: position
             });
         })
         .catch((error) => console.error("error: " + error));

@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  //Note: StrictMode will cause components to render twice and effects to be run twice in development mode.
   <React.StrictMode>
     <App />
   </React.StrictMode>
