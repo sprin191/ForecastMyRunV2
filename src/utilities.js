@@ -76,6 +76,5 @@ export function getPrecipitationTypeDescription(code) {
 }
 
 export function getIcon(code) {
-    console.log(weatherIcons[code], code);
     return weatherIcons[code].default;
 }

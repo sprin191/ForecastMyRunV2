@@ -102,12 +102,16 @@ class Forecast extends Component {
                 formattedResult[i].startTime = new Date(formattedResult[i].startTime).toISOString();
                 formattedResult[i].hasSunSet = !(formattedResult[i].startTime >= formattedResult[i].values.sunriseTime && formattedResult[i].startTime < formattedResult[i].values.sunsetTime);
                 formattedResult[i].values.rating = this.calculateRating(formattedResult[i].values.dewPoint, formattedResult[i].values.precipitationProbability);
+                formattedResult[i].didSunRiseInPastHour = !formattedResult[i].hasSunSet && formattedResult[i].values.sunriseTime < formattedResult[i].startTime && moment(formattedResult[i].values.sunriseTime) > moment(formattedResult[i].startTime).subtract(1, 'h');
+                formattedResult[i].didSunSetInPastHour = formattedResult[i].hasSunSet && formattedResult[i].values.sunsetTime < formattedResult[i].startTime && moment(formattedResult[i].values.sunsetTime) > moment(formattedResult[i].startTime).subtract(1, 'h');
                 
                 if (formattedResult[i].hasSunSet && (formattedResult[i].values.weatherCode === 1000 || formattedResult[i].values.weatherCode === 1100 || formattedResult[i].values.weatherCode === 1101)) {
                     formattedResult[i].values.weatherCode += '1';
                 }
 
-                formattedResult[i].values.precipitationTypeDescription = getPrecipitationTypeDescription(formattedResult[i].values.preciitationType);
+                if (formattedResult[i].values.precipitationProbability > 0 && formattedResult[i].values.preciitationType) {
+                    formattedResult[i].values.precipitationTypeDescription = getPrecipitationTypeDescription(formattedResult[i].values.preciitationType);
+                }
             }
 
             console.log(formattedResult);
@@ -137,38 +141,52 @@ class Forecast extends Component {
         return(
             <Container>
                 <div className="header">Forecast My Run - {this.state.currentDate}</div>
-                <Row>
+                {/*<img src={require('../../icons/running_fast.svg').default} alt="ideal"/>*/}
                 {this.state.forecastData.map((data, index) => (
-                  <Col key={index} xs={6} sm={4} lg={3} className="forecast-item-container">
-                    <div className="forecast-item__content">
-                        {data.values.rating === 1 && 
-                            <div className="rating-badge font-color-white background-green">Ideal</div>
+                    <Row key={index} className="forecast-item__container" style={(index === this.state.forecastData.length - 1) ? { borderBottom: '1px solid #000000' }: null}>
+                        {data.didSunRiseInPastHour &&
+                            <div className="sun__content">Sunrise at {moment(data.values.sunriseTime).format("hh:mm A")}</div>
                         }
-                        {data.values.rating === 2 &&
-                            <div className="rating-badge background-yellow">Fair</div>
+                        {data.didSunSetInPastHour &&
+                            <div className="sun__content">Sunset at {moment(data.values.sunsetTime).format("hh:mm A")}</div>
                         }
-                        {data.values.rating === 3 &&
-                            <div className="rating-badge background-red">Not Recommended</div>
-                        }
-                        <div className="observation-time">{data.observation_time}</div>
-                        <WeatherIcon value={data.values.weatherCode}/>
-                        {/*<img src={require('../../icons/running_fast.svg').default} alt="ideal"/>*/}
-                        {data.values.precipitationProbability > 0 && 
-                            <div>{data.values.precipitationProbability}% Chance of {data.values.precipitationTypeDescription}</div>
-                        }
-                        <div>
-                            <span>{Math.round(data.values.temperature)}°F</span>
-                            {Math.round(data.values.temperatureApparent) !== Math.round(data.values.temperature) &&
-                                <span>(feels like: {Math.round(data.values.temperatureApparent)})°F</span>
-                            }                        
-                        </div>
-                        <div className="toggle-header">See More v</div>
-                        {/*<div>Humidity: {Math.round(data.values.humidity)}%</div>*/}
-                        {/*<div>Dewpoint: {Math.round(data.values.dewPoint)}°F</div>*/}
-                    </div>
-                  </Col>
+                        <Row className="forecast-item__content">
+                            <Col xs={2} lg={1}>
+                                <div className="observation-time">{data.observation_time}</div>
+                            </Col>
+                            <Col xs={1}></Col>
+                            <Col xs={2} lg={1}>
+                            <WeatherIcon value={data.values.weatherCode}/>
+                                <div>
+                                    <span>{Math.round(data.values.temperature)}°F</span>
+                                    {Math.round(data.values.temperatureApparent) !== Math.round(data.values.temperature) &&
+                                        <span>(feels like: {Math.round(data.values.temperatureApparent)})°F</span>
+                                    }                        
+                                </div>
+                            </Col>
+                            <Col xs={1}></Col>
+                            <Col>
+                                {data.values.precipitationProbability > 0 && 
+                                    <div>{data.values.precipitationProbability}% Chance of {data.values.precipitationTypeDescription}</div>
+                                }
+                                <div>Humidity: {Math.round(data.values.humidity)}%</div>
+                                <div>Dewpoint: {Math.round(data.values.dewPoint)}°F</div>
+                            </Col>
+                            <Col xs={1}></Col>
+                            <Col>
+                                {data.values.rating === 1 && 
+                                    <div className="rating-badge font-color-white background-green">Ideal</div>
+                                }
+                                {data.values.rating === 2 &&
+                                    <div className="rating-badge background-yellow">Fair</div>
+                                }
+                                {data.values.rating === 3 &&
+                                    <div className="rating-badge background-red">Not Recommended</div>
+                                }
+                            </Col>
+                        </Row>
+                    </Row>
                 ))}
-                </Row>
             </Container>
         )
     }

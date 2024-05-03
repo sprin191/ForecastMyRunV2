@@ -4,8 +4,21 @@
     text-align: center;
   }
   
-  .forecast-item-container {
-    padding-bottom: 30px;
+  .forecast-item__container {
+    border-top: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-left: 1px solid #000000;
+
+    .sun__content {
+      padding: 20px 0 20px 20px;
+      border-bottom: 1px solid #000000;
+    }
+
+    .forecast-item__content {
+      padding: 20px 0;
+      text-align: center;
+      align-items: center;
+    }
   }
 
   .background-green {
@@ -18,51 +31,4 @@
 
   .background-red {
     background-color: #C03B13;
-  }
-  
-  .forecast-item__content {
-    border: gray solid 1px;
-    border-radius: 5px;
-    text-align: center;
-    position: relative;
-
-    div, img {
-      padding-bottom: 0.5em;
-    }
-
-    img {
-        flex: 0 0 auto;
-        width: 50%;
-
-        @media (min-width: 992px) {
-            width: 25%;
-        }
-
-        @media (min-width: 576px) {
-            width: 33.33333333%;
-        }
-    }
-
-    .rating-badge {
-      padding: 5px 10px;
-      border-radius: 5px;
-      position: absolute;
-      top: 5px;
-      right: 5px;
-    }
-
-    .font-color-white {
-      color: #FFFFFF;
-    }
-
-    .observation-time {
-      padding-top: 25px;
-    }
-
-    .toggle-header {
-      border-top: 1px solid #000000;
-      margin-top: 0.5em;
-      padding-top: 0.5em;
-      padding-bottom: 0.5em;
-    }
   }
