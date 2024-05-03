@@ -1,19 +1,34 @@
-.text-align-center {
-    text-align: center;
-  }
-  
   .header {
     margin-bottom: 30px;
     font-size: 24px;
+    text-align: center;
   }
   
   .forecast-item-container {
     padding-bottom: 30px;
   }
+
+  .background-green {
+    background-color: #00A550;
+  }
+
+  .background-yellow {
+    background-color: #F7C118;
+  }
+
+  .background-red {
+    background-color: #C03B13;
+  }
   
-  .forecast-item {
+  .forecast-item__content {
     border: gray solid 1px;
     border-radius: 5px;
+    text-align: center;
+    position: relative;
+
+    div, img {
+      padding-bottom: 0.5em;
+    }
 
     img {
         flex: 0 0 auto;
@@ -26,5 +41,28 @@
         @media (min-width: 576px) {
             width: 33.33333333%;
         }
+    }
+
+    .rating-badge {
+      padding: 5px 10px;
+      border-radius: 5px;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+    }
+
+    .font-color-white {
+      color: #FFFFFF;
+    }
+
+    .observation-time {
+      padding-top: 25px;
+    }
+
+    .toggle-header {
+      border-top: 1px solid #000000;
+      margin-top: 0.5em;
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
     }
   }

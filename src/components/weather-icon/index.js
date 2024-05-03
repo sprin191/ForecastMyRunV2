@@ -1,5 +1,5 @@
 import React from 'react';
-import { getIcon, getWeatherCodeDescription } from "../../utilities/icons";
+import { getIcon, getWeatherCodeDescription } from "../../utilities";
 
 function WeatherIcon({value}) {
     const description = getWeatherCodeDescription(value);
